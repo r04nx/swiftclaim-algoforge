@@ -16,10 +16,7 @@ const insuranceService = new InsuranceService(
 );
 insuranceService.connectSigner(process.env.PRIVATE_KEY);
 
-// Initialize Gemini AI
-const GEMINI_API_KEY = "AIzaSyBvIEb59ECl1PDVBShPGWKsteBODB2usfE";
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const geminiModel = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
 
 // Simple test route to get all pending claims
 router.get('/pending-claims', async (req, res) => {
@@ -317,9 +314,9 @@ router.post('/claim', async (req, res) => {
             `INSERT INTO claims (
                 user_id, policy_number, policy_id, incident_description, 
                 claim_amount, bill_start_date, bill_end_date, aabha_id, 
-                flight_id, claim_type
+                flight_id, claim_type, claim_status
              )
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
              RETURNING claim_id`,
             [
                 userId,
@@ -331,7 +328,8 @@ router.post('/claim', async (req, res) => {
                 billEndDate,
                 claimType === 'health' ? aabhaId : null,
                 claimType === 'travel' ? flightId : null,
-                claimType
+                claimType,
+                'approved'
             ]
         );
 
@@ -384,15 +382,16 @@ router.post('/claim', async (req, res) => {
         // 10. Record transaction hash
         await client.query(
             `INSERT INTO claimed_transactions (
-                claim_id, amount, transaction_hash, transaction_type, notes
+                claim_id, amount, transaction_hash, transaction_type, notes, status
              )
-             VALUES ($1, $2, $3, $4, $5)`,
+             VALUES ($1, $2, $3, $4, $5, $6)`,
             [
                 claimId,
                 claimAmount,
                 blockchainResult.transactionHash,
                 'claim_payout',
-                `Initial claim submission for ${claimType} claim. Status: ${blockchainResult.status}`
+                `Initial claim submission for ${claimType} claim. Status: ${blockchainResult.status}`,
+                'pending'
             ]
         );
 
@@ -406,7 +405,7 @@ router.post('/claim', async (req, res) => {
                 policyNumber,
                 claimAmount,
                 claimType,
-                status: 'pending'
+                status: 'approved'
             },
             blockchain: {
                 chainClaimId: blockchainResult.claimId || '0',

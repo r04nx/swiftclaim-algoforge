@@ -528,6 +528,152 @@ AI Generation Error (500 Internal Server Error):
 }
 ```
 
+## Database Schema
+
+The application uses PostgreSQL with the following schema:
+
+```sql
+-- Users table
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(20) UNIQUE NOT NULL,
+    role VARCHAR(20) NOT NULL CHECK (role IN ('customer', 'admin', 'insurer', 'agent')),
+    upi_id VARCHAR(50),
+    password VARCHAR(255) NOT NULL,
+    address TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Insurance Policies table
+CREATE TABLE insurance_policies (
+    policy_id VARCHAR(50) PRIMARY KEY,
+    type VARCHAR(20) NOT NULL CHECK (type IN ('health', 'travel')),
+    coverage DECIMAL(15,2) NOT NULL,
+    company VARCHAR(100) NOT NULL,
+    insurance_expiry_date DATE NOT NULL,
+    max_claims_per_year INTEGER NOT NULL DEFAULT 1,
+    waiting_period_days INTEGER DEFAULT 0,
+    last_claimed TIMESTAMP,
+    
+    -- Health-specific fields
+    treatments TEXT, -- CONTRACT_CHECKED: Will be checked in contract
+    min_hospitalization_days INTEGER,
+    max_hospitalization_days INTEGER,
+    
+    -- Travel-specific fields
+    delay_time_minutes INTEGER, -- CONTRACT_CHECKED: Will be checked in contract
+    cancellation_status BOOLEAN, -- CONTRACT_CHECKED: Will be checked in contract
+    travel_time_hours INTEGER, -- CONTRACT_CHECKED: Will be checked in contract
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CHECK ((type = 'health' AND treatments IS NOT NULL) OR 
+           (type = 'travel' AND delay_time_minutes IS NOT NULL))
+);
+
+-- Subscribed Policies table
+CREATE TABLE subscribed_policies (
+    subscription_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    policy_id VARCHAR(50) REFERENCES insurance_policies(policy_id),
+    policy_number INTEGER UNIQUE NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+    status VARCHAR(20) DEFAULT 'active' CHECK (status IN ('active', 'inactive', 'expired')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id, policy_id)
+);
+
+-- AABHA Health Records table
+CREATE TABLE aabha_records (
+    aabha_id VARCHAR(50) PRIMARY KEY,
+    patient_name VARCHAR(100) NOT NULL,
+    treatment TEXT NOT NULL, -- CONTRACT_CHECKED: Will be checked in contract
+    diagnosis TEXT NOT NULL,
+    hospital_name VARCHAR(100) NOT NULL,
+    doctor_name VARCHAR(100) NOT NULL,
+    patient_admission_date TIMESTAMP NOT NULL, -- CONTRACT_CHECKED: Will be checked in contract
+    patient_discharge_date TIMESTAMP,
+    bill_amount DECIMAL(12,2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Flight Data table
+CREATE TABLE flight_data (
+    flight_id SERIAL PRIMARY KEY,
+    flight_number VARCHAR(20) NOT NULL,
+    cancellation_status BOOLEAN DEFAULT FALSE, -- CONTRACT_CHECKED: Will be checked in contract
+    delay_time_minutes INTEGER, -- CONTRACT_CHECKED: Will be checked in contract
+    flight_from VARCHAR(5) NOT NULL,
+    flight_to VARCHAR(5) NOT NULL,
+    flight_company VARCHAR(100) NOT NULL,
+    flight_duration_minutes INTEGER NOT NULL, -- CONTRACT_CHECKED: Will be checked in contract
+    scheduled_departure TIMESTAMP NOT NULL,
+    actual_departure TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(flight_number, scheduled_departure)
+);
+
+-- Claims table
+CREATE TABLE claims (
+    claim_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    
+    -- Policy details
+    policy_number INTEGER REFERENCES subscribed_policies(policy_number),
+    policy_id VARCHAR(50) REFERENCES insurance_policies(policy_id),
+    filing_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    bill_start_date DATE,
+    bill_end_date DATE,
+    
+    -- Claim details
+    incident_description TEXT NOT NULL,
+    claim_status VARCHAR(20) DEFAULT 'pending' CHECK (claim_status IN ('pending', 'processing', 'approved', 'rejected', 'paid')),
+    claim_amount DECIMAL(12,2) NOT NULL,
+    approved_amount DECIMAL(12,2),
+    
+    -- Health claim specific fields
+    aabha_id VARCHAR(50) REFERENCES aabha_records(aabha_id),
+    
+    -- Travel claim specific fields
+    flight_id INTEGER REFERENCES flight_data(flight_id),
+    
+    claim_type VARCHAR(20) NOT NULL CHECK (claim_type IN ('health', 'travel')),
+    processing_notes TEXT,
+    decision_timestamp TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+    CHECK ((claim_type = 'health' AND aabha_id IS NOT NULL) OR 
+           (claim_type = 'travel' AND flight_id IS NOT NULL))
+);
+
+-- Claimed Transactions table
+CREATE TABLE claimed_transactions (
+    transaction_id SERIAL PRIMARY KEY,
+    claim_id INTEGER REFERENCES claims(claim_id),
+    amount DECIMAL(12,2) NOT NULL,
+    transaction_hash VARCHAR(66),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    upi_reference VARCHAR(50),
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'completed', 'failed')),
+    transaction_type VARCHAR(20) NOT NULL CHECK (transaction_type IN ('claim_payout', 'refund', 'adjustment')),
+    notes TEXT
+);
+
+-- Audit Log table (optional but recommended for tracking)
+CREATE TABLE audit_log (
+    log_id SERIAL PRIMARY KEY,
+    entity_type VARCHAR(50) NOT NULL,
+    entity_id INTEGER NOT NULL,
+    action VARCHAR(50) NOT NULL,
+    user_id INTEGER REFERENCES users(user_id),
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    details TEXT
+);
+```
+
 ## Environment Variables Required
 ```env
 PORT=3000
