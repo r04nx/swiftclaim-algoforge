@@ -9,7 +9,10 @@ import { Send, X, Mic, Maximize2, Minimize2, Brain } from "lucide-react"
 import { GoogleGenerativeAI } from "@google/generative-ai"
 
 // Initialize Gemini API
-const genAI = new GoogleGenerativeAI("AIzaSyDhLkcTBvUCqkrNG6f1UUPsm0i45Mpo-68")
+const genAI = new GoogleGenerativeAI("AIzaSyD7Lo4tZk7V3iwZ0XsutrjZEEwYqqVBr40")
+
+// Global chat history array
+let chatHistory: { role: 'user' | 'chatbot'; content: string }[] = [];
 
 const SYSTEM_PROMPT = `You are Claim Saathi, an AI assistant for Swift Claim - an insurance claims processing platform.
 
@@ -91,31 +94,54 @@ export default function ChatbotWidget() {
     return "happy"
   }
 
-  const generateResponse = async (userMessage: string) => {
+  // Function to process chat messages with context
+  const processChatMessage = async (newMessage: string) => {
+    // Construct the context string by joining previous messages
+    let contextString = "";
+    for (const msg of chatHistory) {
+      contextString += `${msg.role}: ${msg.content}\n`;
+    }
+
+    // Prepend the context to the new message
+    const messageWithContext = contextString + `user: ${newMessage}`;
+    console.log("Full message with context:", messageWithContext); // For debugging
+
+    return await generateResponse(messageWithContext);
+  }
+
+  const generateResponse = async (messageWithContext: string) => {
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-pro" })
+      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" })
       
-      const prompt = `${SYSTEM_PROMPT}\n\nUser: ${userMessage}\n\nClaim Saathi:`
+      const prompt = `${SYSTEM_PROMPT}\n\n${messageWithContext}\n\nClaim Saathi:`
 
       const result = await model.generateContent(prompt)
-      const response = await result.response
-      const text = response.text()
+      const text = result.response.text()
+      console.log("Gemini Response:", text) // Debug log
       
+      // Add bot message to chat history
+      chatHistory.push({ role: 'chatbot', content: text });
+
       return {
         content: text,
         mood: getMoodFromContent(text)
       }
     } catch (error) {
       console.error("Error generating response:", error)
+      const errorMessage = "I'm having trouble connecting right now. Please try again in a moment.";
+      chatHistory.push({ role: 'chatbot', content: errorMessage });
       return {
-        content: "I'm having trouble connecting right now. Please try again in a moment.",
-        mood: "confused"
+        content: errorMessage,
+        mood: "confused" as const
       }
     }
   }
 
   const handleSendMessage = async () => {
     if (!message.trim()) return
+
+    // Add user message to chat history
+    chatHistory.push({ role: 'user', content: message });
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -128,8 +154,8 @@ export default function ChatbotWidget() {
     setMessage("")
     setIsTyping(true)
 
-    // Generate AI response
-    const response = await generateResponse(message)
+    // Process message with context and generate response
+    const response = await processChatMessage(message)
     
     const botMessage: Message = {
       id: (Date.now() + 1).toString(),
