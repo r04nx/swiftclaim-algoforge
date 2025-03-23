@@ -6,6 +6,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Bell, Search, Menu, X, Zap, User, LogOut, Settings, HelpCircle } from "lucide-react"
 import { ModeToggle } from "@/components/mode-toggle"
 import {
@@ -17,15 +18,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Badge } from "@/components/ui/badge"
+import { useAuth } from "@/providers/auth-provider"
 
 export default function DashboardHeader() {
   const router = useRouter()
+  const { logoutUser } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
 
   const handleLogout = () => {
-    // In a real app, this would handle logout logic
-    router.push("/auth/login")
+    logoutUser()
   }
 
   return (

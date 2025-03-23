@@ -99,10 +99,10 @@ export default function RegisterPage() {
           break
         case 2:
           if (!formData.contactPerson.name || !formData.contactPerson.email || 
-              !formData.contactPerson.phone || !formData.contactPerson.designation) {
+              !formData.contactPerson.phone || !formData.contactPerson.designation || !formData.password) {
             toast({
               title: "Required Fields",
-              description: "Please fill in all contact person details",
+              description: "Please fill in all contact person details and password",
               variant: "destructive"
             })
             return
@@ -379,6 +379,29 @@ export default function RegisterPage() {
                     })}
                     required
                   />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Password must be at least 8 characters with a number and special character
+                  </p>
                 </div>
               </div>
             </div>

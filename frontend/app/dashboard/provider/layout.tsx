@@ -16,7 +16,16 @@ import {
   RefreshCw,
   CreditCard,
   Brain,
-  AlertTriangle
+  AlertTriangle,
+  ChevronDown,
+  ClaimIcon,
+  Dashboard,
+  Database,
+  FileCheck,
+  HelpCircle,
+  InboxIcon,
+  PieChart,
+  Upload
 } from "lucide-react"
 import {
   DropdownMenu,
@@ -37,6 +46,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { ModeToggle } from "@/components/mode-toggle"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Progress } from "@/components/ui/progress"
+import { useAuth } from "@/providers/auth-provider"
 
 interface ProviderLayoutProps {
   children: ReactNode
@@ -45,6 +63,7 @@ interface ProviderLayoutProps {
 export default function ProviderLayout({ children }: ProviderLayoutProps) {
   const router = useRouter()
   const pathname = usePathname()
+  const { logoutUser } = useAuth()
 
   const navigationItems = [
     {
@@ -150,10 +169,7 @@ export default function ProviderLayout({ children }: ProviderLayoutProps) {
   ]
 
   const handleLogout = () => {
-    // In a real app, this would handle authentication logout
-    // For example: clearAuthTokens(), invalidateSession(), etc.
-    console.log("Logging out...")
-    router.push("/auth/login")
+    logoutUser()
   }
 
   return (

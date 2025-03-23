@@ -33,6 +33,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useAuth } from "@/providers/auth-provider"
 
 export default function DashboardSidebar() {
   const pathname = usePathname()
@@ -40,6 +41,7 @@ export default function DashboardSidebar() {
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     claims: true,
   })
+  const { logoutUser } = useAuth()
 
   const toggleSection = (section: string) => {
     setOpenSections((prev) => ({
@@ -53,9 +55,7 @@ export default function DashboardSidebar() {
   }
   
   const handleLogout = () => {
-    // In a real app, this would handle authentication logout
-    console.log("Logging out user...")
-    router.push("/auth/login")
+    logoutUser()
   }
 
   return (
