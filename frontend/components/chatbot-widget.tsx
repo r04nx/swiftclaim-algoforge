@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { MessageCircle, Send, X, Minimize2, Maximize2 } from "lucide-react"
 import Image from "next/image"
 
+
 export default function ChatbotWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
