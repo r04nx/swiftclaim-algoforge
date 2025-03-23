@@ -19,62 +19,62 @@ import {
 const menuItems = [
   {
     title: "Overview",
-    href: "/dashboard",
+    href: "/dashboard/user",
     icon: LayoutDashboard,
   },
   {
     title: "Claims",
-    href: "/dashboard/claims",
+    href: "/dashboard/user/claims",
     icon: FileText,
     submenu: [
-      { title: "Active Claims", href: "/dashboard/claims" },
-      { title: "File New Claim", href: "/dashboard/claims/new" },
-      { title: "Claim History", href: "/dashboard/claims/history" },
+      { title: "Active Claims", href: "/dashboard/user/claims" },
+      { title: "File New Claim", href: "/dashboard/user/claims/new" },
+      { title: "Claim History", href: "/dashboard/user/claims/history" },
     ]
   },
   {
-    title: "Blockchain",
-    href: "/dashboard/blockchain",
+    title: "Policies",
+    href: "/dashboard/user/policies",
     icon: Shield,
     submenu: [
-      { title: "Smart Contracts", href: "/dashboard/blockchain/contracts" },
-      { title: "Transaction History", href: "/dashboard/blockchain/transactions" },
-      { title: "Verification Status", href: "/dashboard/blockchain/verification" },
+      { title: "My Policies", href: "/dashboard/user/policies" },
+      { title: "Policy Details", href: "/dashboard/user/policies/details" },
+      { title: "Renewals", href: "/dashboard/user/policies/renewals" },
     ]
   },
   {
     title: "AI Analysis",
-    href: "/dashboard/ai",
+    href: "/dashboard/user/ai",
     icon: Brain,
     submenu: [
-      { title: "Risk Assessment", href: "/dashboard/ai/risk" },
-      { title: "Fraud Detection", href: "/dashboard/ai/fraud" },
-      { title: "Insights", href: "/dashboard/ai/insights" },
+      { title: "Risk Assessment", href: "/dashboard/user/ai/risk" },
+      { title: "Fraud Detection", href: "/dashboard/user/ai/fraud" },
+      { title: "Insights", href: "/dashboard/user/ai/insights" },
     ]
   },
   {
     title: "Notifications",
-    href: "/dashboard/notifications",
+    href: "/dashboard/user/notifications",
     icon: Bell,
   },
   {
     title: "Wallet",
-    href: "/dashboard/wallet",
+    href: "/dashboard/user/wallet",
     icon: Wallet,
   },
   {
     title: "Profile",
-    href: "/dashboard/profile",
+    href: "/dashboard/user/profile",
     icon: User,
   },
   {
     title: "Settings",
-    href: "/dashboard/settings",
+    href: "/dashboard/user/settings",
     icon: Settings,
   },
   {
     title: "Help & Support",
-    href: "/dashboard/support",
+    href: "/dashboard/user/help",
     icon: HelpCircle,
   },
 ]

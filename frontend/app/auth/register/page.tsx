@@ -166,15 +166,10 @@ export default function RegisterPage() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1500))
       
-      // Redirect based on user type and company type
+      // Redirect based on user type
       if (formData.userType === "company") {
-        if (["general", "life", "health", "composite"].includes(formData.companyType)) {
-          // Insurance provider companies go to provider dashboard
-          router.push("/provider")
-        } else {
-          // Other companies go to company onboarding
-          router.push("/onboarding/company")
-        }
+        // All company users go to onboarding first
+        router.push("/onboarding/company")
       } else {
         // Individual users go to email verification
         router.push("/auth/verify-email")
@@ -425,7 +420,7 @@ export default function RegisterPage() {
             <div className="flex items-center gap-4 mb-8">
               <div className="h-16 w-16 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
                 <Image
-                  src="https://i.ibb.co/DgLw71WX/claimsaathi-happy-tooexcited-smilingwithopenmouth.png"
+                  src="https://i.ibb.co/DgLw71W/claimsaathi-happy-tooexcited-smilingwithopenmouth.png"
                   alt="Welcome"
                   width={48}
                   height={48}

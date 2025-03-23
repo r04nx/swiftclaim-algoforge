@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Zap, CheckCircle, Mail } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
@@ -11,6 +11,8 @@ import { Loader } from "@/components/ui/loader"
 
 export default function VerifyEmailPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const userType = searchParams.get("userType") || "user"
   const { toast } = useToast()
   const [isLoading, setIsLoading] = useState(false)
   const [countdown, setCountdown] = useState(60)
@@ -48,9 +50,13 @@ export default function VerifyEmailPage() {
       setIsTransitioning(false)
       setIsVerified(true)
 
-      // Redirect after showing success message
+      // Redirect after showing success message based on user type
       setTimeout(() => {
-        router.push("/dashboard")
+        if (userType === "provider") {
+          router.push("/onboarding/company")
+        } else {
+          router.push("/dashboard/user")
+        }
       }, 2000)
     }, 2500)
   }
@@ -142,4 +148,3 @@ export default function VerifyEmailPage() {
     </div>
   )
 }
-

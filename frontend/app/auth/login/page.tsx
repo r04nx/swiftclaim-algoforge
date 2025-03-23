@@ -57,7 +57,12 @@ export default function LoginPage() {
         title: "Login successful",
         description: "Welcome back to Swift Claim!",
       })
-      router.push("/dashboard")
+      // Redirect based on user type
+      if (userType === "user") {
+        router.push("/dashboard/user")
+      } else {
+        router.push("/dashboard/provider")
+      }
     }, 2500) // Increased time to show loading state
   }
 
@@ -71,7 +76,12 @@ export default function LoginPage() {
         title: "Biometric authentication successful",
         description: "Welcome back to Swift Claim!",
       })
-      router.push("/dashboard")
+      // Redirect based on user type
+      if (userType === "user") {
+        router.push("/dashboard/user")
+      } else {
+        router.push("/dashboard/provider")
+      }
     }, 1500)
   }
 
@@ -99,7 +109,12 @@ export default function LoginPage() {
         title: "OTP verified",
         description: "Welcome back to Swift Claim!",
       })
-      router.push("/dashboard")
+      // Redirect based on user type
+      if (userType === "user") {
+        router.push("/dashboard/user")
+      } else {
+        router.push("/dashboard/provider")
+      }
     }, 1500)
   }
 
@@ -400,4 +415,3 @@ export default function LoginPage() {
     </>
   )
 }
-

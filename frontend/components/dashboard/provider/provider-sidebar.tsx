@@ -26,7 +26,7 @@ const providerMenuItems = [
     href: "/dashboard/provider/policies",
     icon: FileText,
     submenu: [
-      { title: "Active Policies", href: "/dashboard/provider/policies/active" },
+      { title: "Active Policies", href: "/dashboard/provider/policies" },
       { title: "Policy Templates", href: "/dashboard/provider/policies/templates" },
       { title: "Create Policy", href: "/dashboard/provider/policies/new" },
     ],
@@ -52,8 +52,8 @@ const providerMenuItems = [
     icon: ChartBar,
   },
   {
-    title: "Customer Management",
-    href: "/dashboard/provider/customers",
+    title: "Team Management",
+    href: "/dashboard/provider/team",
     icon: Users,
   },
   {
