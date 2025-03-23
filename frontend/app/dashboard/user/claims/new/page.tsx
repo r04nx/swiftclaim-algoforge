@@ -29,6 +29,7 @@ import {
 import { useToast } from "@/components/ui/use-toast"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
+import apiClient from "@/lib/api-client"
 
 export default function NewClaimPage() {
   const router = useRouter()
@@ -228,31 +229,19 @@ export default function NewClaimPage() {
       console.log("Submitting claim with data:", JSON.stringify(requestData, null, 2))
 
       // Make API call to submit claim
-      const apiUrl = "http://localhost:3000/api/insurance/claim"
-      console.log("Sending request to:", apiUrl)
+      console.log("Sending request to API")
       
       let apiSuccess = false;
       let responseData = null;
       
       try {
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // The Authorization header would be set by your auth middleware
-            "Authorization": "Bearer YOUR_AUTH_TOKEN_HERE" // This should come from your auth context/localStorage
-          },
-          body: JSON.stringify(requestData),
-        })
+        responseData = await apiClient.post('insurance/claim', requestData);
+        apiSuccess = true;
         
-        console.log("Response status:", response.status)
-        console.log("Response headers:", Object.fromEntries([...response.headers.entries()]))
-        
-        responseData = await response.json()
         console.log("API response:", JSON.stringify(responseData, null, 2))
 
         // Display response in an alert format regardless of success or failure
-        if (!response.ok || responseData.success === false) {
+        if (!responseData.success || responseData.success === false) {
           // Handle error response according to the format in the README.md
           // Error format: { success: false, error: "Error message", details: "Detailed explanation" }
           const errorMessage = responseData.error || "Unknown error occurred";
@@ -363,8 +352,6 @@ export default function NewClaimPage() {
             duration: 10000, // Show for 10 seconds
           })
         }
-        
-        apiSuccess = response.ok && responseData.success !== false;
       } catch (networkError: any) {
         console.error("Network error:", networkError)
         console.warn("API connection failed, will use fallback for development")

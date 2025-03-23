@@ -20,7 +20,7 @@ build/
 out/
 
 # Hardhat artifacts and cache
-artifacts/
+# artifacts/
 cache/
 typechain/
 typechain-types/

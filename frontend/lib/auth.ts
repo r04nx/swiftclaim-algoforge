@@ -37,26 +37,13 @@ export interface AuthResponse {
   user: UserResponse;
 }
 
-// Base API URL
-const API_URL = 'http://localhost:3000/api';
+// Import API client
+import apiClient from './api-client';
 
 // Login function
 export async function login(credentials: LoginRequest): Promise<AuthResponse> {
   try {
-    const response = await fetch(`${API_URL}/auth/login`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(credentials),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Login failed');
-    }
-
-    const data = await response.json();
+    const data = await apiClient.post<AuthResponse>('auth/login', credentials);
     
     // Store auth data in session storage
     sessionStorage.setItem('auth_token', data.token);
@@ -72,20 +59,7 @@ export async function login(credentials: LoginRequest): Promise<AuthResponse> {
 // Register regular user function
 export async function registerUser(userData: RegisterUserRequest): Promise<AuthResponse> {
   try {
-    const response = await fetch(`${API_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Registration failed');
-    }
-
-    const data = await response.json();
+    const data = await apiClient.post<AuthResponse>('auth/register', userData);
     
     // Store auth data in session storage
     sessionStorage.setItem('auth_token', data.token);
@@ -101,20 +75,7 @@ export async function registerUser(userData: RegisterUserRequest): Promise<AuthR
 // Register insurer function
 export async function registerInsurer(insurerData: RegisterInsurerRequest): Promise<AuthResponse> {
   try {
-    const response = await fetch(`${API_URL}/auth/register`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(insurerData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Registration failed');
-    }
-
-    const data = await response.json();
+    const data = await apiClient.post<AuthResponse>('auth/register', insurerData);
     
     // Store auth data in session storage
     sessionStorage.setItem('auth_token', data.token);
@@ -136,20 +97,7 @@ export async function getProfile(): Promise<any> {
       throw new Error('No authentication token found');
     }
     
-    const response = await fetch(`${API_URL}/auth/profile`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.error || 'Failed to fetch profile');
-    }
-
-    const data = await response.json();
+    const data = await apiClient.get('auth/profile');
     
     // Update user data in session storage
     sessionStorage.setItem('user_data', JSON.stringify(data.user));
