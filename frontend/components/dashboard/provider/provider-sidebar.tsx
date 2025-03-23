@@ -8,7 +8,6 @@ import {
   FileText,
   Users,
   Settings,
-<<<<<<< HEAD
   ChartBar,
   Shield,
   Brain,
@@ -17,22 +16,12 @@ import {
 } from "lucide-react"
 
 const providerMenuItems = [
-=======
-  Shield,
-  Brain,
-  BarChart3,
-  HelpCircle,
-} from "lucide-react"
-
-const sidebarItems = [
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
   {
     title: "Dashboard",
     href: "/dashboard/provider",
     icon: LayoutDashboard,
   },
   {
-<<<<<<< HEAD
     title: "Policy Management",
     href: "/dashboard/provider/policies",
     icon: FileText,
@@ -61,21 +50,6 @@ const sidebarItems = [
     title: "Analytics",
     href: "/dashboard/provider/analytics",
     icon: ChartBar,
-=======
-    title: "Claims Management",
-    href: "/dashboard/provider/claims",
-    icon: FileText,
-  },
-  {
-    title: "Policy Management",
-    href: "/dashboard/provider/policies",
-    icon: Shield,
-  },
-  {
-    title: "AI & Analytics",
-    href: "/dashboard/provider/analytics",
-    icon: Brain,
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
   },
   {
     title: "Team Management",
@@ -83,33 +57,16 @@ const sidebarItems = [
     icon: Users,
   },
   {
-<<<<<<< HEAD
-=======
-    title: "Reports",
-    href: "/dashboard/provider/reports",
-    icon: BarChart3,
-  },
-  {
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     title: "Settings",
     href: "/dashboard/provider/settings",
     icon: Settings,
   },
-<<<<<<< HEAD
-=======
-  {
-    title: "Help & Support",
-    href: "/dashboard/provider/support",
-    icon: HelpCircle,
-  },
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
 ]
 
 export default function ProviderSidebar() {
   const pathname = usePathname()
 
   return (
-<<<<<<< HEAD
     <div className="hidden lg:flex lg:flex-col lg:w-72 lg:border-r">
       <div className="p-6">
         <Link href="/dashboard/provider" className="flex items-center gap-2">
@@ -149,36 +106,6 @@ export default function ProviderSidebar() {
             )}
           </div>
         ))}
-=======
-    <div className="flex flex-col h-full w-64 bg-white dark:bg-gray-900 border-r">
-      <div className="p-6">
-        <Link href="/dashboard/provider" className="flex items-center gap-2">
-          <Shield className="h-6 w-6 text-[#07a6ec]" />
-          <span className="font-bold text-xl">Swift Claim</span>
-        </Link>
-      </div>
-
-      <nav className="flex-1 px-4">
-        <ul className="space-y-2">
-          {sidebarItems.map((item) => {
-            const isActive = pathname === item.href
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors",
-                    isActive && "bg-blue-50 dark:bg-blue-900/20 text-[#07a6ec]"
-                  )}
-                >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.title}</span>
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
       </nav>
     </div>
   )

@@ -17,6 +17,7 @@ app.use('/api/insurance', claimRoutes);
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ 
+        success: false,
         error: 'Something went wrong!',
         details: process.env.NODE_ENV === 'development' ? err.message : undefined
     });

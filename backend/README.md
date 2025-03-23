@@ -86,39 +86,45 @@ Creates a new user account.
 Invalid Role (400 Bad Request):
 ```json
 {
+    "success": false,
     "error": "Invalid role",
-    "message": "Role must be one of: customer, admin, insurer, agent"
+    "details": "Role must be one of: customer, admin, insurer, agent"
 }
 ```
 
 Missing Insurer Details (400 Bad Request):
 ```json
 {
+    "success": false,
     "error": "Missing insurer details",
-    "message": "Company name, registration number, company type, and designation are required for insurers"
+    "details": "Company name, registration number, company type, and designation are required for insurers"
 }
 ```
 
 Invalid Company Type (400 Bad Request):
 ```json
 {
+    "success": false,
     "error": "Invalid company type",
-    "message": "Company type must be either health_insurance or travel_insurance"
+    "details": "Company type must be either health_insurance or travel_insurance"
 }
 ```
 
 Invalid UPI ID (400 Bad Request):
 ```json
 {
+    "success": false,
     "error": "Invalid UPI ID",
-    "message": "UPI ID must be in the format username@provider"
+    "details": "UPI ID must be in the format username@provider"
 }
 ```
 
 User Exists (400 Bad Request):
 ```json
 {
-    "error": "User already exists"
+    "success": false,
+    "error": "User already exists",
+    "details": "A user with this email already exists"
 }
 ```
 
@@ -151,6 +157,7 @@ Authenticates a user and returns a JWT token.
 **Error Response (401 Unauthorized):**
 ```json
 {
+    "success": false,
     "error": "Invalid credentials"
 }
 ```
@@ -360,6 +367,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 Policy Not Found (404 Not Found):
 ```json
 {
+    "success": false,
     "error": "Policy not found or inactive",
     "details": "No active policy found with policy number: 123456789"
 }
@@ -368,6 +376,7 @@ Policy Not Found (404 Not Found):
 Duplicate Claim (409 Conflict):
 ```json
 {
+    "success": false,
     "error": "Duplicate claim",
     "details": "An active claim (ID: 5, Status: pending) already exists for this policy",
     "existingClaimId": 5
@@ -377,6 +386,7 @@ Duplicate Claim (409 Conflict):
 Invalid Claim Amount (400 Bad Request):
 ```json
 {
+    "success": false,
     "error": "Invalid claim amount",
     "details": "Claim amount must be greater than 0 and less than or equal to policy coverage (500000)"
 }
@@ -385,6 +395,7 @@ Invalid Claim Amount (400 Bad Request):
 Claim Type Mismatch (400 Bad Request):
 ```json
 {
+    "success": false,
     "error": "Claim type mismatch",
     "details": "Cannot submit a health claim for a travel policy"
 }
@@ -393,12 +404,14 @@ Claim Type Mismatch (400 Bad Request):
 Missing Required Fields (400 Bad Request):
 ```json
 {
+    "success": false,
     "error": "Missing AABHA ID",
     "details": "AABHA ID is required for health claims"
 }
 ```
 ```json
 {
+    "success": false,
     "error": "Missing Flight ID",
     "details": "Flight ID is required for travel claims"
 }
@@ -432,6 +445,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 Claim Not Found (404 Not Found):
 ```json
 {
+    "success": false,
     "error": "Claim not found or not in pending status"
 }
 ```
@@ -439,6 +453,7 @@ Claim Not Found (404 Not Found):
 Verification Failed (500 Internal Server Error):
 ```json
 {
+    "success": false,
     "error": "Error verifying claim",
     "details": "Claim amount exceeds hospital bill amount"
 }
@@ -460,6 +475,26 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
     "claimId": "1",
     "paidAmount": "85000",
     "transactionHash": "0x1234567890abcdef..."
+}
+```
+
+**Error Responses:**
+
+Claim Not Found (404 Not Found):
+```json
+{
+    "success": false,
+    "error": "Claim not found",
+    "details": "No claim found with ID: 1"
+}
+```
+
+Processing Failed (500 Internal Server Error):
+```json
+{
+    "success": false,
+    "error": "Error processing claim",
+    "details": "Error message from blockchain processing"
 }
 ```
 
@@ -508,21 +543,64 @@ AI Generation Error (500 Internal Server Error):
 
 ## Error Responses
 
+All error responses follow a standard format:
+
+```json
+{
+    "success": false,
+    "error": "Brief error description",
+    "details": "More detailed explanation of the error"
+}
+```
+
+In development mode, error responses may also include a `stack` field with the error stack trace.
+
 ### Authentication Errors (401 Unauthorized)
 ```json
 {
+    "success": false,
     "error": "No token provided"
 }
 ```
 ```json
 {
+    "success": false,
     "error": "Invalid token"
 }
 ```
 
-### General Errors (500 Internal Server Error)
+### Validation Errors (400 Bad Request)
 ```json
 {
+    "success": false,
+    "error": "Missing required fields",
+    "details": "Policy number, claim amount, and incident description are required"
+}
+```
+
+### Not Found Errors (404 Not Found)
+```json
+{
+    "success": false,
+    "error": "Policy not found or inactive",
+    "details": "No active policy found with policy number: 123456789"
+}
+```
+
+### Conflict Errors (409 Conflict)
+```json
+{
+    "success": false,
+    "error": "Duplicate claim",
+    "details": "An active claim (ID: 5, Status: pending) already exists for this policy",
+    "existingClaimId": 5
+}
+```
+
+### Server Errors (500 Internal Server Error)
+```json
+{
+    "success": false,
     "error": "Something went wrong!",
     "details": "Error details in development mode"
 }

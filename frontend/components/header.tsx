@@ -3,11 +3,33 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, Zap } from "lucide-react"
+import { Menu, X, Zap, User } from "lucide-react"
 import { ModeToggle } from "./mode-toggle"
+import { useAuth } from "@/providers/auth-provider"
+import { useRouter } from "next/navigation"
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { user, isLoggedIn, logoutUser } = useAuth()
+  const router = useRouter()
+
+  const handleLoginClick = () => {
+    router.push('/auth/login')
+  }
+
+  const handleSignupClick = () => {
+    router.push('/auth/register')
+  }
+
+  const handleDashboardClick = () => {
+    if (user?.role === 'customer') {
+      router.push('/dashboard/user')
+    } else if (user?.role === 'insurer') {
+      router.push('/dashboard/provider')
+    } else {
+      router.push('/dashboard/user') // Default fallback
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -41,14 +63,41 @@ export default function Header() {
 
         <div className="hidden md:flex items-center gap-4">
           <ModeToggle />
-          <Link href="/login">
-            <Button variant="outline" className="border-[#07a6ec] text-[#07a6ec] hover:bg-[#07a6ec] hover:text-white">
-              Log in
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button className="bg-[#fa6724] hover:bg-[#e55613] text-white">Sign up</Button>
-          </Link>
+          
+          {isLoggedIn ? (
+            <>
+              <Button 
+                variant="outline" 
+                className="border-[#07a6ec] text-[#07a6ec] hover:bg-[#07a6ec] hover:text-white flex items-center gap-2"
+                onClick={handleDashboardClick}
+              >
+                <User className="h-4 w-4" />
+                Dashboard
+              </Button>
+              <Button 
+                className="bg-[#fa6724] hover:bg-[#e55613] text-white"
+                onClick={logoutUser}
+              >
+                Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button 
+                variant="outline" 
+                className="border-[#07a6ec] text-[#07a6ec] hover:bg-[#07a6ec] hover:text-white"
+                onClick={handleLoginClick}
+              >
+                Log in
+              </Button>
+              <Button 
+                className="bg-[#fa6724] hover:bg-[#e55613] text-white"
+                onClick={handleSignupClick}
+              >
+                Sign up
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -93,14 +142,40 @@ export default function Header() {
               About
             </Link>
             <div className="flex flex-col gap-2 mt-2 px-4">
-              <Link href="/login" onClick={() => setIsMenuOpen(false)}>
-                <Button variant="outline" className="w-full border-[#07a6ec] text-[#07a6ec]">
-                  Log in
-                </Button>
-              </Link>
-              <Link href="/signup" onClick={() => setIsMenuOpen(false)}>
-                <Button className="w-full bg-[#fa6724] hover:bg-[#e55613]">Sign up</Button>
-              </Link>
+              {isLoggedIn ? (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-[#07a6ec] text-[#07a6ec] flex items-center gap-2"
+                    onClick={handleDashboardClick}
+                  >
+                    <User className="h-4 w-4" />
+                    Dashboard
+                  </Button>
+                  <Button 
+                    className="w-full bg-[#fa6724] hover:bg-[#e55613] text-white"
+                    onClick={logoutUser}
+                  >
+                    Log out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full border-[#07a6ec] text-[#07a6ec] flex items-center gap-2"
+                    onClick={handleLoginClick}
+                  >
+                    Log in
+                  </Button>
+                  <Button 
+                    className="w-full bg-[#fa6724] hover:bg-[#e55613] text-white"
+                    onClick={handleSignupClick}
+                  >
+                    Sign up
+                  </Button>
+                </>
+              )}
             </div>
           </nav>
         </div>

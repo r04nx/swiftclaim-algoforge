@@ -198,6 +198,7 @@ router.post('/claim', async (req, res) => {
         // Validate required fields
         if (!policyNumber || !claimAmount || !incidentDescription) {
             return res.status(400).json({
+                success: false,
                 error: 'Missing required fields',
                 details: 'Policy number, claim amount, and incident description are required'
             });
@@ -216,6 +217,7 @@ router.post('/claim', async (req, res) => {
         if (policyResult.rows.length === 0) {
             await client.query('ROLLBACK');
             return res.status(404).json({
+                success: false,
                 error: 'Policy not found or inactive',
                 details: `No active policy found with policy number: ${policyNumber}`
             });
@@ -231,7 +233,7 @@ router.post('/claim', async (req, res) => {
         const existingClaimResult = await client.query(
             `SELECT claim_id, claim_status 
              FROM claims 
-             WHERE user_id = $1 AND policy_id = $2 AND claim_status IN ('pending', 'processing')`,
+             WHERE user_id = $1 AND policy_id = $2 AND claim_status IN ('pending', 'processing', 'approved')`,
             [userId, policyId]
         );
 
@@ -239,6 +241,7 @@ router.post('/claim', async (req, res) => {
             const existingClaim = existingClaimResult.rows[0];
             await client.query('ROLLBACK');
             return res.status(409).json({
+                success: false,
                 error: 'Duplicate claim',
                 details: `An active claim (ID: ${existingClaim.claim_id}, Status: ${existingClaim.claim_status}) already exists for this policy`,
                 existingClaimId: existingClaim.claim_id
@@ -249,6 +252,7 @@ router.post('/claim', async (req, res) => {
         if (claimAmount <= 0 || claimAmount > policy.coverage) {
             await client.query('ROLLBACK');
             return res.status(400).json({
+                success: false,
                 error: 'Invalid claim amount',
                 details: `Claim amount must be greater than 0 and less than or equal to policy coverage (${policy.coverage})`
             });
@@ -258,6 +262,7 @@ router.post('/claim', async (req, res) => {
         if (policyType !== claimType) {
             await client.query('ROLLBACK');
             return res.status(400).json({
+                success: false,
                 error: 'Claim type mismatch',
                 details: `Cannot submit a ${claimType} claim for a ${policyType} policy`
             });
@@ -267,6 +272,7 @@ router.post('/claim', async (req, res) => {
         if (claimType === 'health' && !aabhaId) {
             await client.query('ROLLBACK');
             return res.status(400).json({
+                success: false,
                 error: 'Missing AABHA ID',
                 details: 'AABHA ID is required for health claims'
             });
@@ -275,6 +281,7 @@ router.post('/claim', async (req, res) => {
         if (claimType === 'travel' && !flightId) {
             await client.query('ROLLBACK');
             return res.status(400).json({
+                success: false,
                 error: 'Missing Flight ID',
                 details: 'Flight ID is required for travel claims'
             });
@@ -290,6 +297,7 @@ router.post('/claim', async (req, res) => {
             if (aabhaResult.rows.length === 0) {
                 await client.query('ROLLBACK');
                 return res.status(404).json({
+                    success: false,
                     error: 'AABHA record not found',
                     details: `No AABHA record found with ID: ${aabhaId}`
                 });
@@ -303,6 +311,7 @@ router.post('/claim', async (req, res) => {
             if (flightResult.rows.length === 0) {
                 await client.query('ROLLBACK');
                 return res.status(404).json({
+                    success: false,
                     error: 'Flight data not found',
                     details: `No flight data found with ID: ${flightId}`
                 });
@@ -417,7 +426,10 @@ router.post('/claim', async (req, res) => {
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error submitting claim:', error);
+        
+        // Standard error response format
         res.status(500).json({ 
+            success: false,
             error: 'Error submitting claim',
             details: error.message,
             stack: process.env.NODE_ENV === 'development' ? error.stack : undefined

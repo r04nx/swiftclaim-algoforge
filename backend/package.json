@@ -8,21 +8,14 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
-<<<<<<< HEAD
-    "axios": "^1.4.0",
-=======
     "@google/generative-ai": "^0.24.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.1",
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ethers": "^5.7.2",
     "express": "^4.18.2",
-<<<<<<< HEAD
-=======
     "jsonwebtoken": "^9.0.2",
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     "pg": "^8.11.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.32.1"
@@ -30,8 +23,4 @@
   "devDependencies": {
     "nodemon": "^3.0.1"
   }
-<<<<<<< HEAD
-} 
-=======
 }
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2

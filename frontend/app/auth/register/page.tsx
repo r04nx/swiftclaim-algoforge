@@ -12,10 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ArrowLeft, Zap, Eye, EyeOff, ChevronRight, Shield, FileText, Phone, Building, Users, CheckCircle } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader } from "@/components/ui/loader"
-<<<<<<< HEAD
-=======
-import { signIn } from "next-auth/react"
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
+import { registerUser, registerInsurer } from "@/lib/auth"
 
 type UserType = "individual" | "company"
 
@@ -82,13 +79,10 @@ export default function RegisterPage() {
     "Travel Insurance"
   ]
 
-<<<<<<< HEAD
   const handleUserTypeChange = (value: string) => {
     setFormData({ ...formData, userType: value as UserType })
   }
 
-=======
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
   const handleNext = () => {
     // Validate based on user type and current step
     if (formData.userType === "company") {
@@ -145,16 +139,9 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-<<<<<<< HEAD
     
     // Final validation before submission
     if (formData.userType === "company") {
-=======
-    setIsLoading(true)
-
-    try {
-      // Final validation before submission
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
       if (!formData.agreeTerms) {
         toast({
           title: "Terms Agreement Required",
@@ -163,7 +150,6 @@ export default function RegisterPage() {
         })
         return
       }
-<<<<<<< HEAD
     } else {
       if (!formData.agreeTerms || formData.insuranceType.length === 0) {
         toast({
@@ -176,70 +162,65 @@ export default function RegisterPage() {
     }
 
     setIsTransitioning(true)
+    setIsLoading(true)
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      // Redirect based on user type
+      // Format the data according to the API requirements
       if (formData.userType === "company") {
-        // All company users go to onboarding first
-        router.push("/onboarding/company")
+        // Register as insurer
+        const insurerData = {
+          fullName: `${formData.contactPerson.name}`,
+          email: formData.contactPerson.email,
+          phone: formData.contactPerson.phone,
+          password: formData.password,
+          address: "", // Add address field in your form if needed
+          role: "insurer",
+          company_name: formData.companyName,
+          registration_number: formData.registrationNumber,
+          company_type: formData.companyType === "Health Insurance" ? "health_insurance" : "travel_insurance",
+          designation: formData.contactPerson.designation
+        };
+        
+        // Call the registerInsurer function from auth.ts
+        await registerInsurer(insurerData as any);
+        
+        // Redirect to company onboarding
+        toast({
+          title: "Registration successful",
+          description: "Welcome to Swift Claim! Let's set up your company account."
+        });
+        router.push("/onboarding/company");
       } else {
-        // Individual users go to email verification
-        router.push("/auth/verify-email")
+        // Register as regular user
+        const userData = {
+          fullName: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          address: "", // Add address field in your form if needed
+          role: "customer"
+        };
+        
+        // Call the registerUser function from auth.ts
+        await registerUser(userData);
+        
+        // Redirect to email verification
+        toast({
+          title: "Registration successful",
+          description: "Account created successfully. Please verify your email."
+        });
+        router.push("/auth/verify-email");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive"
-      })
-    } finally {
-      setIsTransitioning(false)
-=======
-
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.error || "Registration failed")
-      }
-
-      // Sign in the user after successful registration
-      const result = await signIn("credentials", {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        throw new Error(result.error)
-      }
-
-      toast({
-        title: "Registration Successful",
-        description: "Welcome to Swift Claim!",
-      })
-
-      // Redirect based on user type
-      router.push(formData.userType === "company" ? "/dashboard/provider" : "/dashboard/user")
-    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : "Registration failed. Please try again.";
       toast({
         title: "Registration Failed",
-        description: error instanceof Error ? error.message : "Please try again later",
+        description: errorMessage,
         variant: "destructive"
-      })
+      });
     } finally {
-      setIsLoading(false)
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
+      setIsLoading(false);
+      setIsTransitioning(false);
     }
   }
 
@@ -263,11 +244,7 @@ export default function RegisterPage() {
                 <Label>I am registering as:</Label>
                 <RadioGroup
                   value={formData.userType}
-<<<<<<< HEAD
                   onValueChange={handleUserTypeChange}
-=======
-                  onValueChange={(value) => setFormData({ ...formData, userType: value })}
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                   className="grid grid-cols-2 gap-4"
                 >
                   <div className={`p-4 rounded-lg border cursor-pointer transition-colors ${
@@ -474,7 +451,6 @@ export default function RegisterPage() {
       }
     }
 
-<<<<<<< HEAD
     // Individual user steps
     switch (step) {
       case 1:
@@ -724,100 +700,6 @@ export default function RegisterPage() {
       default:
         return null;
     }
-=======
-    return (
-      <div className="space-y-6">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="h-16 w-16 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
-            <Image
-              src="https://i.ibb.co/DgLw71WX/claimsaathi-happy-tooexcited-smilingwithopenmouth.png"
-              alt="Welcome"
-              width={48}
-              height={48}
-              className="rounded-full"
-            />
-          </div>
-          <div>
-            <h2 className="text-2xl font-bold">Welcome!</h2>
-            <p className="text-gray-600 dark:text-gray-400">Let's start with your basic information</p>
-          </div>
-        </div>
-
-        <div className="space-y-4 mb-6">
-          <Label>I am registering as:</Label>
-          <RadioGroup
-            value={formData.userType}
-            onValueChange={(value) => setFormData({ ...formData, userType: value })}
-            className="grid grid-cols-2 gap-4"
-          >
-            <div className={`p-4 rounded-lg border cursor-pointer transition-colors ${
-              formData.userType === "individual"
-                ? "border-[#07a6ec] bg-blue-50 dark:bg-blue-900/20"
-                : "hover:border-gray-400"
-            }`}>
-              <RadioGroupItem value="individual" id="individual" className="sr-only" />
-              <Label htmlFor="individual" className="cursor-pointer">
-                <div className="font-medium mb-1">Individual Policyholder</div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  I want to manage my personal insurance policies
-                </p>
-              </Label>
-            </div>
-
-            <div className={`p-4 rounded-lg border cursor-pointer transition-colors ${
-              formData.userType === "company"
-                ? "border-[#07a6ec] bg-blue-50 dark:bg-blue-900/20"
-                : "hover:border-gray-400"
-            }`}>
-              <RadioGroupItem value="company" id="company" className="sr-only" />
-              <Label htmlFor="company" className="cursor-pointer">
-                <div className="font-medium mb-1">Insurance Provider</div>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  I represent an insurance company
-                </p>
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
-              <Input
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                required
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-            />
-          </div>
-        </div>
-      </div>
-    )
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
   }
 
   return (

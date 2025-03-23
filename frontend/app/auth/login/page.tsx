@@ -11,16 +11,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-<<<<<<< HEAD
 import { Fingerprint, ArrowLeft, Zap, Eye, EyeOff } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader } from "@/components/ui/loader"
-=======
-import { Fingerprint, ArrowLeft, Zap, Eye, EyeOff, Loader2 } from "lucide-react"
-import { useToast } from "@/components/ui/use-toast"
-import { Loader } from "@/components/ui/loader"
-import { signIn } from "next-auth/react"
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
+import { login } from "@/lib/auth"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -34,6 +28,7 @@ export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState("")
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [userType, setUserType] = useState<"user" | "insurer" | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const handleOtpChange = (index: number, value: string) => {
     if (value.length > 1) {
@@ -53,150 +48,72 @@ export default function LoginPage() {
     }
   }
 
-<<<<<<< HEAD
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
+    setIsLoading(true)
+    setError(null)
     setIsTransitioning(true)
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsTransitioning(false)
-=======
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setIsLoading(true)
-
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        throw new Error(result.error)
-      }
-
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
+      // Call the login API function
+      const response = await login({ email, password })
+      
+      // Handle successful login
       toast({
         title: "Login successful",
         description: "Welcome back to Swift Claim!",
       })
-<<<<<<< HEAD
-      // Redirect based on user type
-      if (userType === "user") {
+      
+      // Redirect based on user role (from the response)
+      if (response.user.role === 'customer') {
         router.push("/dashboard/user")
-      } else {
+      } else if (response.user.role === 'insurer') {
         router.push("/dashboard/provider")
+      } else if (response.user.role === 'admin') {
+        router.push("/dashboard/admin")
+      } else {
+        router.push("/dashboard/user") // Default fallback
       }
-    }, 2500) // Increased time to show loading state
-  }
-
-  const handleBiometricLogin = async () => {
-    setIsLoading(true)
-
-    // Simulate biometric authentication
-=======
-
-      // The dashboard layout will handle the appropriate redirect
-      router.push("/dashboard")
-      router.refresh()
-
     } catch (error) {
-      console.error(error)
+      // Handle login error
+      const errorMessage = error instanceof Error ? error.message : "Login failed. Please try again."
+      setError(errorMessage)
       toast({
         title: "Login failed",
-        description: error instanceof Error ? error.message : "Invalid credentials",
-        variant: "destructive",
+        description: errorMessage,
+        variant: "destructive"
       })
     } finally {
       setIsLoading(false)
-    }
-  }
-
-  const handlePasswordLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-
-    try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        // Show error toast based on error type
-        if (result.error === "No user found with this email") {
-          toast({
-            title: "Account not found",
-            description: "No account exists with this email address",
-            variant: "destructive",
-          })
-        } else if (result.error === "Invalid password") {
-          toast({
-            title: "Invalid credentials",
-            description: "The email or password you entered is incorrect",
-            variant: "destructive",
-          })
-        } else {
-          toast({
-            title: "Login failed",
-            description: "Please check your credentials and try again",
-            variant: "destructive",
-          })
-        }
-        return
-      }
-
-      // Success toast
-      toast({
-        title: "Login successful",
-        description: "Welcome back to Swift Claim!",
-      })
-
-      router.push("/dashboard")
-      router.refresh()
-
-    } catch (error) {
-      console.error(error)
-      toast({
-        title: "Login failed",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
+      setIsTransitioning(false)
     }
   }
 
   const handleBiometricLogin = async () => {
-    // For now, we'll keep the simulation
     setIsLoading(true)
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
+
+    // Note: Real biometric implementation would go here
+    // For now we'll simulate it
     setTimeout(() => {
       setIsLoading(false)
       toast({
         title: "Biometric authentication successful",
         description: "Welcome back to Swift Claim!",
       })
-<<<<<<< HEAD
       // Redirect based on user type
       if (userType === "user") {
         router.push("/dashboard/user")
       } else {
         router.push("/dashboard/provider")
       }
-=======
-      router.push("/dashboard")
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     }, 1500)
   }
 
   const handleSendOtp = async () => {
     setIsLoading(true)
 
-    // Simulate sending OTP
+    // Note: Real OTP implementation would go here
+    // For now we'll simulate it
     setTimeout(() => {
       setIsLoading(false)
       toast({
@@ -210,23 +127,20 @@ export default function LoginPage() {
   const handleVerifyOtp = async () => {
     setIsLoading(true)
 
-    // Simulate OTP verification
+    // Note: Real OTP verification would go here
+    // For now we'll simulate it
     setTimeout(() => {
       setIsLoading(false)
       toast({
         title: "OTP verified",
         description: "Welcome back to Swift Claim!",
       })
-<<<<<<< HEAD
       // Redirect based on user type
       if (userType === "user") {
         router.push("/dashboard/user")
       } else {
         router.push("/dashboard/provider")
       }
-=======
-      router.push("/dashboard")
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     }, 1500)
   }
 
@@ -334,11 +248,7 @@ export default function LoginPage() {
                   </TabsList>
 
                   <TabsContent value="password">
-<<<<<<< HEAD
                     <form onSubmit={handleLogin} className="space-y-4">
-=======
-                    <form onSubmit={handlePasswordLogin} className="space-y-4">
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
                         <Input
@@ -348,23 +258,12 @@ export default function LoginPage() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
-<<<<<<< HEAD
-=======
-                          disabled={isLoading}
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                         />
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <Label htmlFor="password">Password</Label>
-<<<<<<< HEAD
                           <Link href="/auth/forgot-password" className="text-sm text-[#07a6ec] hover:underline">
-=======
-                          <Link 
-                            href="/auth/forgot-password" 
-                            className="text-sm text-[#07a6ec] hover:underline"
-                          >
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                             Forgot password?
                           </Link>
                         </div>
@@ -376,10 +275,6 @@ export default function LoginPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-<<<<<<< HEAD
-=======
-                            disabled={isLoading}
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                           />
                           <Button
                             type="button"
@@ -387,22 +282,9 @@ export default function LoginPage() {
                             size="icon"
                             className="absolute right-0 top-0 h-full px-3"
                             onClick={() => setShowPassword(!showPassword)}
-<<<<<<< HEAD
                           >
                             {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                             <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
-=======
-                            disabled={isLoading}
-                          >
-                            {showPassword ? (
-                              <EyeOff className="h-4 w-4" />
-                            ) : (
-                              <Eye className="h-4 w-4" />
-                            )}
-                            <span className="sr-only">
-                              {showPassword ? "Hide password" : "Show password"}
-                            </span>
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                           </Button>
                         </div>
                       </div>
@@ -415,24 +297,8 @@ export default function LoginPage() {
                           Remember me
                         </label>
                       </div>
-<<<<<<< HEAD
                       <Button type="submit" className="w-full bg-[#fa6724] hover:bg-[#e55613]" disabled={isLoading}>
                         {isLoading ? "Logging in..." : "Log in"}
-=======
-                      <Button 
-                        type="submit" 
-                        className="w-full bg-[#fa6724] hover:bg-[#e55613]" 
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                            Logging in...
-                          </>
-                        ) : (
-                          "Log in"
-                        )}
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                       </Button>
                     </form>
                   </TabsContent>
@@ -575,7 +441,3 @@ export default function LoginPage() {
     </>
   )
 }
-<<<<<<< HEAD
-=======
-
->>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
