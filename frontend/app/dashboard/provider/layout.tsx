@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Brain, Shield, FileText, BarChart3, Users, Settings } from "lucide-react"
 
 interface ProviderLayoutProps {
@@ -29,26 +30,41 @@ export default function ProviderLayout({ children }: ProviderLayoutProps) {
           </div>
         </div>
         <nav className="px-4 space-y-2">
-          <a href="/provider" className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          <Link 
+            href="/dashboard/provider" 
+            className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+          >
             <BarChart3 className="h-5 w-5" />
             Dashboard
-          </a>
-          <a href="/provider/claims" className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          </Link>
+          <Link 
+            href="/dashboard/provider/claims" 
+            className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+          >
             <FileText className="h-5 w-5" />
             Claims
-          </a>
-          <a href="/provider/policies" className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          </Link>
+          <Link 
+            href="/dashboard/provider/policies" 
+            className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+          >
             <Shield className="h-5 w-5" />
             Policies
-          </a>
-          <a href="/provider/team" className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          </Link>
+          <Link 
+            href="/dashboard/provider/team" 
+            className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+          >
             <Users className="h-5 w-5" />
             Team
-          </a>
-          <a href="/provider/settings" className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+          </Link>
+          <Link 
+            href="/dashboard/provider/settings" 
+            className="flex items-center gap-3 px-3 py-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg"
+          >
             <Settings className="h-5 w-5" />
             Settings
-          </a>
+          </Link>
         </nav>
       </aside>
 
