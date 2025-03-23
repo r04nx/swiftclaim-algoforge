@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+export default function DashboardHeader() {
+  // Move header code here
+=======
 "use client"
 
 import { useState } from "react"
@@ -44,4 +48,5 @@ export default function DashboardHeader() {
       </div>
     </header>
   )
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
 } 

@@ -1,5 +1,17 @@
 "use client"
 
+<<<<<<< HEAD
+import { createContext, useContext, ReactNode } from "react"
+import ChatbotWidget from "./chatbot-widget"
+
+const ChatbotContext = createContext({})
+
+export function ChatbotProvider({ children }: { children: ReactNode }) {
+  return (
+    <ChatbotContext.Provider value={{}}>
+      {children}
+      <ChatbotWidget />
+=======
 import { createContext, useState, useContext, type ReactNode } from "react"
 
 type Message = {
@@ -58,10 +70,13 @@ export function ChatbotProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     </ChatbotContext.Provider>
   )
 }
 
+<<<<<<< HEAD
+=======
 export function useChatbot() {
   const context = useContext(ChatbotContext)
   if (context === undefined) {
@@ -70,3 +85,4 @@ export function useChatbot() {
   return context
 }
 
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2

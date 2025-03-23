@@ -5,7 +5,11 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { ChatbotProvider } from "@/components/chatbot/chatbot-provider"
+<<<<<<< HEAD
+import { LoadingProvider } from "@/providers/loading-provider"
+=======
 import { AuthProvider } from "@/providers/auth-provider"
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -23,14 +27,29 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
+<<<<<<< HEAD
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <LoadingProvider>
+=======
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
             <ChatbotProvider>
               {children}
               <Toaster />
             </ChatbotProvider>
+<<<<<<< HEAD
+          </LoadingProvider>
+        </ThemeProvider>
+=======
           </ThemeProvider>
         </AuthProvider>
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
       </body>
     </html>
   )

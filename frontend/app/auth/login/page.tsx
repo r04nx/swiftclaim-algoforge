@@ -11,10 +11,16 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+<<<<<<< HEAD
+import { Fingerprint, ArrowLeft, Zap, Eye, EyeOff } from "lucide-react"
+import { useToast } from "@/components/ui/use-toast"
+import { Loader } from "@/components/ui/loader"
+=======
 import { Fingerprint, ArrowLeft, Zap, Eye, EyeOff, Loader2 } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader } from "@/components/ui/loader"
 import { signIn } from "next-auth/react"
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
 
 export default function LoginPage() {
   const router = useRouter()
@@ -47,6 +53,15 @@ export default function LoginPage() {
     }
   }
 
+<<<<<<< HEAD
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsTransitioning(true)
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsTransitioning(false)
+=======
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsLoading(true)
@@ -62,10 +77,26 @@ export default function LoginPage() {
         throw new Error(result.error)
       }
 
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
       toast({
         title: "Login successful",
         description: "Welcome back to Swift Claim!",
       })
+<<<<<<< HEAD
+      // Redirect based on user type
+      if (userType === "user") {
+        router.push("/dashboard/user")
+      } else {
+        router.push("/dashboard/provider")
+      }
+    }, 2500) // Increased time to show loading state
+  }
+
+  const handleBiometricLogin = async () => {
+    setIsLoading(true)
+
+    // Simulate biometric authentication
+=======
 
       // The dashboard layout will handle the appropriate redirect
       router.push("/dashboard")
@@ -142,13 +173,23 @@ export default function LoginPage() {
   const handleBiometricLogin = async () => {
     // For now, we'll keep the simulation
     setIsLoading(true)
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     setTimeout(() => {
       setIsLoading(false)
       toast({
         title: "Biometric authentication successful",
         description: "Welcome back to Swift Claim!",
       })
+<<<<<<< HEAD
+      // Redirect based on user type
+      if (userType === "user") {
+        router.push("/dashboard/user")
+      } else {
+        router.push("/dashboard/provider")
+      }
+=======
       router.push("/dashboard")
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     }, 1500)
   }
 
@@ -176,7 +217,16 @@ export default function LoginPage() {
         title: "OTP verified",
         description: "Welcome back to Swift Claim!",
       })
+<<<<<<< HEAD
+      // Redirect based on user type
+      if (userType === "user") {
+        router.push("/dashboard/user")
+      } else {
+        router.push("/dashboard/provider")
+      }
+=======
       router.push("/dashboard")
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     }, 1500)
   }
 
@@ -284,7 +334,11 @@ export default function LoginPage() {
                   </TabsList>
 
                   <TabsContent value="password">
+<<<<<<< HEAD
+                    <form onSubmit={handleLogin} className="space-y-4">
+=======
                     <form onSubmit={handlePasswordLogin} className="space-y-4">
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
                         <Input
@@ -294,16 +348,23 @@ export default function LoginPage() {
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
+<<<<<<< HEAD
+=======
                           disabled={isLoading}
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                         />
                       </div>
                       <div className="space-y-2">
                         <div className="flex justify-between">
                           <Label htmlFor="password">Password</Label>
+<<<<<<< HEAD
+                          <Link href="/auth/forgot-password" className="text-sm text-[#07a6ec] hover:underline">
+=======
                           <Link 
                             href="/auth/forgot-password" 
                             className="text-sm text-[#07a6ec] hover:underline"
                           >
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                             Forgot password?
                           </Link>
                         </div>
@@ -315,7 +376,10 @@ export default function LoginPage() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+<<<<<<< HEAD
+=======
                             disabled={isLoading}
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                           />
                           <Button
                             type="button"
@@ -323,6 +387,11 @@ export default function LoginPage() {
                             size="icon"
                             className="absolute right-0 top-0 h-full px-3"
                             onClick={() => setShowPassword(!showPassword)}
+<<<<<<< HEAD
+                          >
+                            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                            <span className="sr-only">{showPassword ? "Hide password" : "Show password"}</span>
+=======
                             disabled={isLoading}
                           >
                             {showPassword ? (
@@ -333,6 +402,7 @@ export default function LoginPage() {
                             <span className="sr-only">
                               {showPassword ? "Hide password" : "Show password"}
                             </span>
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                           </Button>
                         </div>
                       </div>
@@ -345,6 +415,10 @@ export default function LoginPage() {
                           Remember me
                         </label>
                       </div>
+<<<<<<< HEAD
+                      <Button type="submit" className="w-full bg-[#fa6724] hover:bg-[#e55613]" disabled={isLoading}>
+                        {isLoading ? "Logging in..." : "Log in"}
+=======
                       <Button 
                         type="submit" 
                         className="w-full bg-[#fa6724] hover:bg-[#e55613]" 
@@ -358,6 +432,7 @@ export default function LoginPage() {
                         ) : (
                           "Log in"
                         )}
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                       </Button>
                     </form>
                   </TabsContent>
@@ -500,4 +575,7 @@ export default function LoginPage() {
     </>
   )
 }
+<<<<<<< HEAD
+=======
 
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2

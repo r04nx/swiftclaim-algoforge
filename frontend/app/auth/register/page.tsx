@@ -12,7 +12,10 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { ArrowLeft, Zap, Eye, EyeOff, ChevronRight, Shield, FileText, Phone, Building, Users, CheckCircle } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import { Loader } from "@/components/ui/loader"
+<<<<<<< HEAD
+=======
 import { signIn } from "next-auth/react"
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
 
 type UserType = "individual" | "company"
 
@@ -79,6 +82,13 @@ export default function RegisterPage() {
     "Travel Insurance"
   ]
 
+<<<<<<< HEAD
+  const handleUserTypeChange = (value: string) => {
+    setFormData({ ...formData, userType: value as UserType })
+  }
+
+=======
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
   const handleNext = () => {
     // Validate based on user type and current step
     if (formData.userType === "company") {
@@ -135,10 +145,16 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+<<<<<<< HEAD
+    
+    // Final validation before submission
+    if (formData.userType === "company") {
+=======
     setIsLoading(true)
 
     try {
       // Final validation before submission
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
       if (!formData.agreeTerms) {
         toast({
           title: "Terms Agreement Required",
@@ -147,6 +163,41 @@ export default function RegisterPage() {
         })
         return
       }
+<<<<<<< HEAD
+    } else {
+      if (!formData.agreeTerms || formData.insuranceType.length === 0) {
+        toast({
+          title: "Required Fields",
+          description: "Please select insurance types and agree to terms",
+          variant: "destructive"
+        })
+        return
+      }
+    }
+
+    setIsTransitioning(true)
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500))
+      
+      // Redirect based on user type
+      if (formData.userType === "company") {
+        // All company users go to onboarding first
+        router.push("/onboarding/company")
+      } else {
+        // Individual users go to email verification
+        router.push("/auth/verify-email")
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsTransitioning(false)
+=======
 
       const response = await fetch("/api/auth/register", {
         method: "POST",
@@ -188,6 +239,7 @@ export default function RegisterPage() {
       })
     } finally {
       setIsLoading(false)
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
     }
   }
 
@@ -211,7 +263,11 @@ export default function RegisterPage() {
                 <Label>I am registering as:</Label>
                 <RadioGroup
                   value={formData.userType}
+<<<<<<< HEAD
+                  onValueChange={handleUserTypeChange}
+=======
                   onValueChange={(value) => setFormData({ ...formData, userType: value })}
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
                   className="grid grid-cols-2 gap-4"
                 >
                   <div className={`p-4 rounded-lg border cursor-pointer transition-colors ${
@@ -418,6 +474,257 @@ export default function RegisterPage() {
       }
     }
 
+<<<<<<< HEAD
+    // Individual user steps
+    switch (step) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-16 w-16 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center">
+                <Image
+                  src="https://i.ibb.co/DgLw71W/claimsaathi-happy-tooexcited-smilingwithopenmouth.png"
+                  alt="Welcome"
+                  width={48}
+                  height={48}
+                  className="rounded-full"
+                />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">Welcome!</h2>
+                <p className="text-gray-600 dark:text-gray-400">Let's start with your basic information</p>
+              </div>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              <Label>I am registering as:</Label>
+              <RadioGroup
+                value={formData.userType}
+                onValueChange={handleUserTypeChange}
+                className="grid grid-cols-2 gap-4"
+              >
+                <div className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                  formData.userType === "individual"
+                    ? "border-[#07a6ec] bg-blue-50 dark:bg-blue-900/20"
+                    : "hover:border-gray-400"
+                }`}>
+                  <RadioGroupItem value="individual" id="individual" className="sr-only" />
+                  <Label htmlFor="individual" className="cursor-pointer">
+                    <div className="font-medium mb-1">Individual Policyholder</div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      I want to manage my personal insurance policies
+                    </p>
+                  </Label>
+                </div>
+
+                <div className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                  formData.userType === "company"
+                    ? "border-[#07a6ec] bg-blue-50 dark:bg-blue-900/20"
+                    : "hover:border-gray-400"
+                }`}>
+                  <RadioGroupItem value="company" id="company" className="sr-only" />
+                  <Label htmlFor="company" className="cursor-pointer">
+                    <div className="font-medium mb-1">Insurance Provider</div>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      I represent an insurance company
+                    </p>
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    required
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+        );
+        
+      case 2:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-16 w-16 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                <Phone className="h-8 w-8 text-[#07a6ec]" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">Contact Details</h2>
+                <p className="text-gray-600 dark:text-gray-400">How can we reach you?</p>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <div className="relative">
+                  <Input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">
+                  Password must be at least 8 characters with a number and special character
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+        
+      case 3:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-16 w-16 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center">
+                <FileText className="h-8 w-8 text-[#07a6ec]" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">Insurance Preferences</h2>
+                <p className="text-gray-600 dark:text-gray-400">Tell us about your insurance needs</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>What types of insurance are you interested in?</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {insuranceTypes.map((type) => (
+                    <div key={type} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={type}
+                        checked={formData.insuranceType.includes(type)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setFormData({
+                              ...formData,
+                              insuranceType: [...formData.insuranceType, type],
+                            });
+                          } else {
+                            setFormData({
+                              ...formData,
+                              insuranceType: formData.insuranceType.filter((t) => t !== type),
+                            });
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor={type}
+                        className="text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                      >
+                        {type}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="existingPolicy">Do you have any existing policies?</Label>
+                <select
+                  id="existingPolicy"
+                  className="w-full rounded-md border border-input bg-background px-3 py-2"
+                  value={formData.existingPolicy}
+                  onChange={(e) => setFormData({ ...formData, existingPolicy: e.target.value })}
+                >
+                  <option value="">Select an option</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                </select>
+              </div>
+
+              {formData.existingPolicy === "yes" && (
+                <div className="space-y-2">
+                  <Label htmlFor="policyNumber">Policy Number (optional)</Label>
+                  <Input
+                    id="policyNumber"
+                    value={formData.policyNumber}
+                    onChange={(e) => setFormData({ ...formData, policyNumber: e.target.value })}
+                  />
+                </div>
+              )}
+
+              <div className="flex items-center space-x-2 mt-4">
+                <Checkbox
+                  id="agreeTerms"
+                  checked={formData.agreeTerms}
+                  onCheckedChange={(checked) =>
+                    setFormData({ ...formData, agreeTerms: checked as boolean })
+                  }
+                />
+                <label
+                  htmlFor="agreeTerms"
+                  className="text-sm text-gray-600 dark:text-gray-400"
+                >
+                  I agree to the{" "}
+                  <Link href="/terms" className="text-[#07a6ec] hover:underline">
+                    Terms of Service
+                  </Link>{" "}
+                  and{" "}
+                  <Link href="/privacy" className="text-[#07a6ec] hover:underline">
+                    Privacy Policy
+                  </Link>
+                </label>
+              </div>
+            </div>
+          </div>
+        );
+        
+      default:
+        return null;
+    }
+=======
     return (
       <div className="space-y-6">
         <div className="flex items-center gap-4 mb-8">
@@ -510,6 +817,7 @@ export default function RegisterPage() {
         </div>
       </div>
     )
+>>>>>>> fca8a6cb778a8dc4cdf54d5ff1bf0a53fe2d9ce2
   }
 
   return (
