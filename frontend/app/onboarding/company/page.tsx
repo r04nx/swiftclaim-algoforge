@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { ArrowLeft, ArrowRight, CheckCircle, Building, BarChart3, Users, Database } from "lucide-react"
+import { ArrowLeft, ArrowRight, CheckCircle, Building, BarChart3, Users, Database, Shield, Lock, Globe, Server } from "lucide-react"
 import { useToast } from "@/components/ui/use-toast"
 import CompanyOnboardingSteps from "@/components/company-onboarding-steps"
 
@@ -36,6 +36,9 @@ interface OnboardingData {
   dashboardModules: string[]
   notificationPreferences: string[]
   reportingFrequency: string
+
+  // Step 5: Blockchain Network
+  blockchainNetwork: "public" | "private" | ""
 }
 
 const POLICY_TYPES = [
@@ -81,13 +84,14 @@ export default function CompanyOnboarding() {
     teamMembers: [],
     dashboardModules: [],
     notificationPreferences: [],
-    reportingFrequency: "weekly"
+    reportingFrequency: "weekly",
+    blockchainNetwork: ""
   })
 
   const handleNext = () => {
     // Validate current step
     if (validateStep()) {
-      if (currentStep < 4) {
+      if (currentStep < 5) {
         setCurrentStep(currentStep + 1)
       } else {
         handleComplete()
@@ -106,37 +110,63 @@ export default function CompanyOnboarding() {
   const validateStep = () => {
     switch (currentStep) {
       case 1:
-        if (!formData.businessAddress || !formData.taxId || !formData.licenseNumber) {
+        if (!formData.businessAddress || !formData.registeredOffice || !formData.taxId || !formData.licenseNumber) {
           toast({
-            title: "Required Fields",
-            description: "Please fill in all required fields",
+            title: "Missing Information",
+            description: "Please fill in all required company profile fields.",
             variant: "destructive"
           })
           return false
         }
-        break
+        return true
+      
       case 2:
-        if (formData.supportedPolicyTypes.length === 0) {
+        if (formData.supportedPolicyTypes.length === 0 || !formData.claimProcessingTime || !formData.maxClaimAmount) {
           toast({
-            title: "Policy Types Required",
-            description: "Please select at least one policy type",
+            title: "Missing Information",
+            description: "Please complete all policy configuration options.",
             variant: "destructive"
           })
           return false
         }
-        break
+        return true
+      
       case 3:
         if (formData.teamMembers.length === 0) {
           toast({
-            title: "Team Members Required",
-            description: "Please add at least one team member",
+            title: "Missing Information",
+            description: "Please add at least one team member.",
             variant: "destructive"
           })
           return false
         }
-        break
+        return true
+      
+      case 4:
+        if (formData.dashboardModules.length === 0) {
+          toast({
+            title: "Missing Information",
+            description: "Please select at least one dashboard module.",
+            variant: "destructive"
+          })
+          return false
+        }
+        return true
+
+      case 5:
+        if (!formData.blockchainNetwork) {
+          toast({
+            title: "Missing Information",
+            description: "Please select a blockchain network type.",
+            variant: "destructive"
+          })
+          return false
+        }
+        return true
+      
+      default:
+        return true
     }
-    return true
   }
 
   const handleComplete = async () => {
@@ -479,6 +509,112 @@ export default function CompanyOnboarding() {
           </div>
         )
 
+      case 5:
+        return (
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="h-16 w-16 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                <Database className="h-8 w-8 text-[#07a6ec]" />
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold">Blockchain Network Selection</h2>
+                <p className="text-gray-600 dark:text-gray-400">Choose your preferred blockchain network type</p>
+              </div>
+            </div>
+
+            <div className="grid gap-6">
+              <p className="text-gray-600 dark:text-gray-400">
+                Select whether you want to store your blockchain data on a public or private network.
+                This choice affects security, transparency, and operational costs.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <Card 
+                  className={`cursor-pointer border-2 hover:shadow-md transition-all ${
+                    formData.blockchainNetwork === "public" 
+                      ? "border-[#07a6ec] bg-blue-50 dark:bg-blue-900/20" 
+                      : "border-gray-200 dark:border-gray-700"
+                  }`}
+                  onClick={() => setFormData({ ...formData, blockchainNetwork: "public" })}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <Globe className="h-8 w-8 text-[#07a6ec] mr-3" />
+                        <h3 className="text-xl font-bold">Public Network</h3>
+                      </div>
+                      {formData.blockchainNetwork === "public" && (
+                        <CheckCircle className="h-6 w-6 text-[#07a6ec]" />
+                      )}
+                    </div>
+                    
+                    <ul className="space-y-2 text-gray-600 dark:text-gray-400">
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+                        <span>Full transparency and auditability</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+                        <span>Greater trust through decentralization</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+                        <span>Wider industry interoperability</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card 
+                  className={`cursor-pointer border-2 hover:shadow-md transition-all ${
+                    formData.blockchainNetwork === "private" 
+                      ? "border-[#07a6ec] bg-blue-50 dark:bg-blue-900/20" 
+                      : "border-gray-200 dark:border-gray-700"
+                  }`}
+                  onClick={() => setFormData({ ...formData, blockchainNetwork: "private" })}
+                >
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center">
+                        <Shield className="h-8 w-8 text-[#07a6ec] mr-3" />
+                        <h3 className="text-xl font-bold">Private Network</h3>
+                      </div>
+                      {formData.blockchainNetwork === "private" && (
+                        <CheckCircle className="h-6 w-6 text-[#07a6ec]" />
+                      )}
+                    </div>
+                    
+                    <ul className="space-y-2 text-gray-600 dark:text-gray-400">
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+                        <span>Enhanced data privacy and control</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+                        <span>Lower transaction costs</span>
+                      </li>
+                      <li className="flex items-start">
+                        <CheckCircle className="h-5 w-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+                        <span>Faster transaction processing</span>
+                      </li>
+                    </ul>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="mt-6 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <div className="flex items-start">
+                  <Server className="h-5 w-5 text-gray-500 mr-2 shrink-0 mt-0.5" />
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <span className="font-semibold">Note:</span> You can change your blockchain network preference later through your company settings. 
+                    However, migrating existing data between networks may require additional steps.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+
       default:
         return null
     }
@@ -593,9 +729,18 @@ export default function CompanyOnboarding() {
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Back
                 </Button>
-                <Button onClick={handleNext}>
-                  {currentStep === 4 ? "Complete Setup" : "Continue"}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                <Button onClick={handleNext} className="bg-[#07a6ec] hover:bg-[#0695d6]">
+                  {currentStep === 5 ? (
+                    <>
+                      Complete Setup
+                      <CheckCircle className="ml-2 h-4 w-4" />
+                    </>
+                  ) : (
+                    <>
+                      Next
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               </div>
             </Card>

@@ -1,6 +1,6 @@
 "use client"
 import { usePathname } from "next/navigation"
-import { Building, FileText, Users, BarChart3, CheckCircle } from "lucide-react"
+import { Building, FileText, Users, BarChart3, CheckCircle, Database } from "lucide-react"
 
 export default function CompanyOnboardingSteps() {
   const pathname = usePathname()
@@ -11,7 +11,8 @@ export default function CompanyOnboardingSteps() {
   if (pathname?.includes("/step2")) currentStep = 2
   if (pathname?.includes("/step3")) currentStep = 3
   if (pathname?.includes("/step4")) currentStep = 4
-  if (pathname?.includes("/complete")) currentStep = 5
+  if (pathname?.includes("/step5")) currentStep = 5
+  if (pathname?.includes("/complete")) currentStep = 6
 
   const steps = [
     {
@@ -34,60 +35,39 @@ export default function CompanyOnboardingSteps() {
     },
     {
       id: 4,
-      name: "Dashboard Setup",
+      name: "Dashboard Preferences",
       icon: BarChart3,
       path: "/onboarding/company/step4",
     },
     {
       id: 5,
-      name: "Complete",
-      icon: CheckCircle,
-      path: "/onboarding/company/complete",
+      name: "Blockchain Network",
+      icon: Database,
+      path: "/onboarding/company/step5",
     },
   ]
 
   return (
-    <div className="px-4 py-8 border-b">
-      <div className="max-w-4xl mx-auto">
-        <div className="relative">
-          {/* Progress Bar */}
-          <div className="absolute top-5 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700">
+    <div className="px-8 py-6 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex items-center justify-between max-w-3xl mx-auto">
+        {steps.map((step) => (
+          <div key={step.id} className="flex flex-col items-center">
             <div
-              className="h-1 bg-gradient-to-r from-[#07a6ec] to-[#fa6724] transition-all duration-500 ease-in-out"
-              style={{ width: `${Math.max(0, (currentStep / (steps.length - 1)) * 100)}%` }}
-            ></div>
+              className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
+                currentStep >= step.id
+                  ? "bg-[#07a6ec] border-[#07a6ec] text-white"
+                  : "border-gray-300 text-gray-400"
+              }`}
+            >
+              {currentStep > step.id ? (
+                <CheckCircle className="h-5 w-5" />
+              ) : (
+                <step.icon className="h-5 w-5" />
+              )}
+            </div>
+            <div className="mt-2 text-xs">{step.name}</div>
           </div>
-
-          {/* Steps */}
-          <div className="relative flex justify-between">
-            {steps.map((step) => {
-              const StepIcon = step.icon
-              const isActive = currentStep >= step.id
-              const isComplete = currentStep > step.id
-
-              return (
-                <div key={step.id} className="flex flex-col items-center">
-                  <div
-                    className={`relative z-10 flex items-center justify-center w-10 h-10 rounded-full transition-all duration-300 ${
-                      isActive
-                        ? "bg-gradient-to-r from-[#07a6ec] to-[#fa6724] text-white"
-                        : "bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400"
-                    }`}
-                  >
-                    {isComplete ? <CheckCircle className="h-5 w-5" /> : <StepIcon className="h-5 w-5" />}
-                  </div>
-                  <span
-                    className={`mt-2 text-sm font-medium ${
-                      isActive ? "text-gray-900 dark:text-gray-100" : "text-gray-500 dark:text-gray-400"
-                    }`}
-                  >
-                    {step.name}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   )

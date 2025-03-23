@@ -507,14 +507,14 @@ export default function NewClaimPage() {
           variant: statusVariant as any,
         });
         
-        // Redirect to claim history page after a short delay
+        // Redirect to claim success page after a short delay
         setTimeout(() => {
-          router.push('/dashboard/user/claims/history');
+          router.push(`/dashboard/user/claims/success?claimId=${data.claim?.claimId || 'unknown'}`);
         }, 2000); // 2-second delay to allow the user to see the success message
       }
         
-        // Uncomment this to enable navigation to success page
-        // router.push(`/dashboard/claims/success?claimId=${data.claim?.claimId || 'unknown'}`)
+      // If API call succeeded but we need to use the dashboard overview page
+      // router.push('/dashboard/user')
     } catch (error: any) {
       console.error("Error submitting claim:", error)
       console.error("Error details:", {

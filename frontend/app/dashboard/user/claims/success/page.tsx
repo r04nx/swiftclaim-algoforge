@@ -1,14 +1,17 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { CheckCircle } from "lucide-react"
+import { CheckCircle, Home, FileText } from "lucide-react"
 import confetti from "canvas-confetti"
 
 export default function ClaimSuccessPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const claimId = searchParams.get('claimId') || 'unknown'
   const [progress, setProgress] = useState(0)
   const [currentStep, setCurrentStep] = useState(1)
   const [showConfetti, setShowConfetti] = useState(false)
@@ -60,9 +63,12 @@ export default function ClaimSuccessPage() {
             <CheckCircle className="h-10 w-10 text-green-600 dark:text-green-400" />
           </div>
           <h1 className="text-3xl font-bold mb-2">Claim Submitted Successfully!</h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Your claim is being processed through our blockchain verification system
+          <p className="text-gray-600 dark:text-gray-400 mb-2">
+            Your claim #{claimId} is being processed through our blockchain verification system
           </p>
+          <div className="inline-block bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-md">
+            <p className="text-blue-700 dark:text-blue-300 font-medium">Claim ID: {claimId}</p>
+          </div>
         </div>
 
         <Card className="mb-8">
@@ -117,9 +123,27 @@ export default function ClaimSuccessPage() {
           </CardContent>
         </Card>
 
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 mb-6">
           You will receive updates about your claim status via email and SMS
         </p>
+
+        <div className="flex justify-center space-x-4">
+          <Button 
+            onClick={() => router.push('/dashboard/user')}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <Home className="h-4 w-4" />
+            Go to Dashboard
+          </Button>
+          <Button 
+            onClick={() => router.push('/dashboard/user/claims/history')}
+            className="bg-[#fa6724] hover:bg-[#e55613] flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" />
+            View All Claims
+          </Button>
+        </div>
       </div>
     </div>
   )
